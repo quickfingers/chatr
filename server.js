@@ -6,3 +6,50 @@ var fs = require('fs');             // built-in fs module provides filesystem re
 var path = require('path');         // built-in path module provides filesystem path-related functionality
 var mime = require('mime');         // add-on mime module provides ability to derive a mime type based on a filename extension
 var cache = {};                     // cache object is where contents of cached files are stored
+
+// sending file data and error response
+function send404(response)
+{
+    response.writeHead(404, {'Content-Type': 'text/plain'});
+    response.write('Error 404: resource not found');
+    response.end();
+}
+
+// serves file data
+function sendFile(response, filePath, fileContents)
+{
+    response.writeHead(
+        200,
+        {'Content-Type': mime.lookup(path.basename(filePath))}
+    );
+    response.end(fileContents);
+}
+
+function serveStatic(respponse, cache, absPath)
+{
+    // check if file is cached in memory
+    if(cache[absPath]) {
+        //serve file from memory
+        sendFile(respponse, absPath, cache[absPath]);
+    }else {
+        fs.exists(absPath,function(exists) {
+            if(exists)
+            {
+                // read file from disk
+                fs.readFile(absPath, function(err, data)
+                {
+                    if(err) {
+                        send404(respponse);
+                    }else {
+                        cache[absPath] = data;
+
+                        // serve file read from disk
+                        sendFile(respponse, absPath, data);
+                    }
+                });
+            }else {
+                send404(respponse);
+            }
+        });
+    }
+}
