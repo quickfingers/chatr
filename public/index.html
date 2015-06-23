@@ -3,8 +3,24 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title></title>
+    <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
-
+    <div id="content">
+        <div id="room"></div>
+        <div id="room-list"></div>
+        <div id="messages"></div>
+        <form id="send-form">
+            <input id="send-message"/>
+            <input id="send-button" type="submit" value="Send"/>
+            <div id="help">
+                Chat Commands:
+                <ul>
+                    <li>Change nickname: <code>/nick</code></li>
+                    <li>join/create: <code>/join</code></li>
+                </ul>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
